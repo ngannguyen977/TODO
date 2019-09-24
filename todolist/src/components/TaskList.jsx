@@ -8,10 +8,12 @@ class TaskList extends Component {
     //trong Tasklist khia báo biết tasks 
     //để lấy props tên propsTask từ bên App
     var tasks = this.props.propsTask //~var {tasks} = this.props; 
+   
     //hàm map sẽ copy từng phần tử và index của item
     //sau đó chỉ việc render ra TaskItem đã trả về chỗ return của taskList component
     var itemTask = tasks.map((task, index)=>{
-        return <TaskItem />
+        //bắt đầu truyền vào cho taskItem
+        return <TaskItem key={task.id} index={index} task={task}/>
     })
 
     return (
