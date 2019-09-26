@@ -1,36 +1,86 @@
 import React, { Component } from "react";
 
 class TaskForm extends Component{
-    
+    constructor(props){
+        super(props);
+        this.state = {
+            name: '',
+            status: false
+        }
+
+    }
     onCloseForm = () =>{
-        // props onCloseForm bên ngoài
+       // console.log('close form')
+        // gọi thông qua props onCloseForm bên ngoài
         this.props.onCloseForm();
     }
 
+    onChange = (event) =>{
+        var target = event.target;
+        var name = target.name;
+        var value =target.value;
+
+        // ép kiểu
+        
+        this.setState({
+           [name] : value
+        })
+    }
+    // onChange = (event) =>{
+
+    //     var target = event.target
+    //     this.setState({
+    //        name : target.value
+    //     })
+    // }
+    onSubmit = (event) =>{
+        //ngăn tình trạng load lại page
+        event.preventDefault();
+        //onSubmit dưới này là props của cha (app) truyền vào
+        //ta gán this.state để chuyền ra ngoài cha
+       this.props.onSubmit(this.state)
+       // sau khi đã thêm rồi
+       this.onClear();
+       this.onCloseForm();
+
+    }
+
+    onClear = () =>{
+      // chỉ việc xóa hết các state 
+      this.setState({
+          name: '',
+          status: false
+      })
+    }
    render (){
     return (
         <div className="panel panel-warning">
                 <div className="panel-heading">
                     <div className="panel-title">Add todo</div>
-                    <span 
+                    <a 
                     className="fa fa-times-circle text-right"
-                    onClick ={this.onCloseForm}
-                    ></span>
+                    onClick = {this.onCloseForm}>
+                    </a>
                 </div>
                 <div className="panel-body">
-                    <form>
+                    <form onSubmit ={this.onSubmit}>
                         <div className="form-group">
                             <label>Name:</label>
                             <input
                             type="text"
                             className="form-control"
                             name="name"
+                            value={this.state.name}
+                            onChange ={this.onChange}
                             />
                         </div>
                         <label>Trạng thái</label>
                         <select
                         className="form-control"
-                        name="status">
+                        name="status"
+                        value={this.state.status}
+                        onChange ={this.onChange}
+                        >
                         <option value={true}>kích hoat</option>
                         <option value={false}>Ẩn</option>
                         </select>
@@ -38,7 +88,13 @@ class TaskForm extends Component{
                             <button type="submit" className="btn btn-warning">
                                 <span className="fa fa-plus">Lưu lại</span>
                             </button>
-                            <button type="submit" className="btn btn-danger">
+                            <button 
+                            type="submit" 
+                            className="btn btn-danger"
+                            // xoa du lieu trong o input khi
+                            // đã bấm tạo mới xong
+                            onClick={this.onClear}
+                            >
                                 <span className="fa fa-close">Hủy bỏ</span>
                             </button>
                         </div>

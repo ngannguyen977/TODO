@@ -25,32 +25,7 @@ class App extends Component {
             })
         }
     }
-    onGenerateData = () =>{
-        //tạo dữ liệu cho tasks
-        var tasks = [
-            {
-                id: this.generateID(),
-                name:'angular',
-                status: true
-            },
-            {
-                id: this.generateID(),
-                name:'Node',
-                status: false
-            },
-            {
-                id: this.generateID(),
-                name:'bootstrap',
-                status: true
-            }
-        ];
-        //set lại tasks ban đầu là rỗng
-        // this.setState({
-        //     tasks:setTasks
-        // });
-        //luu vao localStorage dang string
-        localStorage.setItem('tasks', JSON.stringify(tasks))
-    }
+   
     s4(){
         return Math.floor((1+Math.random())* 0x10000).toString(16).substring(1)
     }
@@ -70,12 +45,45 @@ class App extends Component {
     }
     onCloseForm = () =>{
         // kiem tra xem truyen du lieu tư taskform ra ngoài thành cong chua
-        // console.log("close");
         this.setState({
             isDisplayForm : false
         })
     }
+    onSubmit=(data)=>{
+        //data thực chất là this.state trong TaskForm truyền ra
+        // bước tiếp chỉ việc lấy giá trị này push thêm vào mảng tasks
+       var {tasks} = this.state;
+        data.id = this.generateID()
+        tasks.push(data)
+        this.setState({
+            tasks:tasks
+        })
+        //sau khi set tieup tuc luu vao localStorage
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
 
+    onUpdateStatus = (id) => {
+        //nhan lai id trong taskItem
+        const { tasks } = this.state;
+        const newTasks = tasks.map(task => {
+          if (task.id === id) {
+            task.status = !task.status
+          }
+          return task;
+        })
+        this.setState({
+            tasks: newTasks
+        })
+    }
+
+    onDelete = (id) =>{
+        var {tasks} = this.state;
+        var result = tasks.filter(task => task.id !==id)
+        this.setState({
+            task: result
+        })
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
     render (){
         // tạo biến để lấy giá trị của state ở trên 
         // lấy biến task này truyền vào Takslist với tên props là propsTask ={tasks}
@@ -83,7 +91,12 @@ class App extends Component {
         //var tasks = this.state.tasks;   
 
         // kiem tra nếu true thì hiển thị <TaskForm> ngượ lại rỗng
-        var elmTaskForm = isDisplayForm ?<TaskForm onCloseForm={this.onCloseForm} /> : '';
+       // chuyền prop vào TaskForm
+       //duoi đây là 2 propr tên: onSubmit và onCloseForm
+        var elmTaskForm = isDisplayForm ? <TaskForm 
+        onSubmit = {this.onSubmit}
+        onCloseForm={this.onCloseForm} 
+        /> : '';
 
         return (
         <div className = "App">
@@ -101,15 +114,16 @@ class App extends Component {
                     >
                         <span className="fa fa-plus">Thêm công việc</span>
                     </button>
-                    <button 
-                    type="button" 
-                    className="btn btn-danger"
-                    onClick={()=>this.onGenerateData()}
-                    >
-                        <span className="fa fa-plus">Generate data</span>
-                    </button>
+                    
                     <Control />
-                    <TaskList propsTask = {tasks}/>
+                    {/* // từ đây ta thấy trong taskList đã có prop này onUpdateStatus*/}
+                    {/* ta tiếp tuc chuyền props này vào taskItem nay trên tasklist */}
+                    {/* vào taskItem xử lý button status */}
+                    <TaskList propsTask = {tasks}
+                    onUpdateStatus = {this.onUpdateStatus}
+                    //nhận từ TaskList ra bằng 1 function
+                    onDelete ={this.onDelete}
+                    />
                     {/* //ta bat dau vào TaskItem lấy item ra */}
                 </div> 
             </div>

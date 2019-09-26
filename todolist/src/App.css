@@ -28,3 +28,7 @@
 .text-right {
     float: right;
 }
+
+input {
+    z-index: 1000;
+}
