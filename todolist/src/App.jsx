@@ -9,8 +9,10 @@ class App extends Component {
         super(props);
         this.state = {
             //khởi tạo tasks 
+           
             tasks: [],
-            isDisplayForm: false
+            isDisplayForm: false,
+            taskEditing: ''
         }
     }
     //làm sao cho sao khi f5 lại dữ liệu còn giữ nguyên
@@ -49,6 +51,12 @@ class App extends Component {
             isDisplayForm : false
         })
     }
+    onShowForm = () =>{
+        // kiem tra xem truyen du lieu tư taskform ra ngoài thành cong chua
+        this.setState({
+            isDisplayForm : true
+        })
+    }
     onSubmit=(data)=>{
         //data thực chất là this.state trong TaskForm truyền ra
         // bước tiếp chỉ việc lấy giá trị này push thêm vào mảng tasks
@@ -64,6 +72,7 @@ class App extends Component {
 
     onUpdateStatus = (id) => {
         //nhan lai id trong taskItem
+       
         const { tasks } = this.state;
         const newTasks = tasks.map(task => {
           if (task.id === id) {
@@ -77,25 +86,37 @@ class App extends Component {
     }
 
     onDelete = (id) =>{
-        var {tasks} = this.state;
-        var result = tasks.filter(task => task.id !==id)
+        const {tasks} = this.state;
+        tasks.splice(id, 1)
         this.setState({
-            task: result
+            tasks: tasks
         })
         localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+    onUpdate =(id) =>{
+        var {tasks} = this.state;
+        var taskEditing = tasks[id];
+        this.setState({
+            taskEditing: taskEditing
+        })
+        this.onShowForm();
+
     }
     render (){
         // tạo biến để lấy giá trị của state ở trên 
         // lấy biến task này truyền vào Takslist với tên props là propsTask ={tasks}
-        var { tasks, isDisplayForm } = this.state
+        var { tasks, isDisplayForm, taskEditing } = this.state
         //var tasks = this.state.tasks;   
 
         // kiem tra nếu true thì hiển thị <TaskForm> ngượ lại rỗng
        // chuyền prop vào TaskForm
        //duoi đây là 2 propr tên: onSubmit và onCloseForm
-        var elmTaskForm = isDisplayForm ? <TaskForm 
+        var elmTaskForm = isDisplayForm ? 
+        <TaskForm 
         onSubmit = {this.onSubmit}
-        onCloseForm={this.onCloseForm} 
+        onCloseForm={this.onCloseForm}
+        //chuyền taskEditing vào taskForm, qua taskForm nhận lại
+        task={this.taskEditing}
         /> : '';
 
         return (
@@ -123,6 +144,7 @@ class App extends Component {
                     onUpdateStatus = {this.onUpdateStatus}
                     //nhận từ TaskList ra bằng 1 function
                     onDelete ={this.onDelete}
+                    onUpdate ={this.onUpdate}
                     />
                     {/* //ta bat dau vào TaskItem lấy item ra */}
                 </div> 

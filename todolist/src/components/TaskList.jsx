@@ -15,11 +15,12 @@ class TaskList extends Component {
             //bắt đầu truyền vào cho taskItem
             return <TaskItem 
             key={task.id} 
-            index={index} 
+            index={index} // index = {task.index}
             task={task}
             //tiep tuc truyen vao cho taskItem
             onUpdateStatus = { this.props.onUpdateStatus}
             onDelete = {this.props.onDelete}
+            onUpdate = {this.props.onUpdate}
             />
        }
     })

@@ -8,13 +8,16 @@ class TaskItem extends Component {
         //mà TaskList truyền vào
         this.props.onUpdateStatus(this.props.task.id);
     }
-     onDelete = () =>{
+    onDelete = () =>{
          //chuyền ra cho TaskList 1 id
         this.props.onDelete(this.props.task.id)
-     }
-   render (){
-                      
+    }
+    onUpdate = () =>{
+        this.props.onUpdate(this.props.task.id);
+    }
 
+   render (){
+                    
     // nhận  lại props từ TaskList chỗ map
     var { task, index } = this.props; // 
     return (
@@ -26,13 +29,17 @@ class TaskItem extends Component {
                 {/* // kiem tra nếu true thì add thêm class  */}
                 <span 
                 className={task.status === true ? 'label label-success' : 'label label-danger'}
-                onClick = { this.onUpdateStatus}
+                //onClick = { this.onUpdateStatus}
                 >
                 {task.status === true ? 'kích hoạt' : 'ẩn'}
             </span>
             </td>
             <td className="text-center">
-                <button type="button" className="btn btn-warning">
+                <button 
+                type="button" 
+                className="btn btn-warning"
+                onClick = {this.onUpdate}
+                >
                     <span className="fa fa-pencil"></span>Sửa
                 </button>
                 <button type="button" className="btn btn-danger"

@@ -4,11 +4,25 @@ class TaskForm extends Component{
     constructor(props){
         super(props);
         this.state = {
+            id: '',
             name: '',
             status: false
         }
 
     }
+    componentWillMount(){
+        //
+        if(this.props.task){
+            this.setState({
+                //prop từ app truyền vào là task
+                id: this.props.task.id,
+                name: this.props.task.name,
+                status: this.props.task.status
+            });
+            console.log(this.state)
+        }
+    }
+
     onCloseForm = () =>{
        // console.log('close form')
         // gọi thông qua props onCloseForm bên ngoài
@@ -53,10 +67,14 @@ class TaskForm extends Component{
       })
     }
    render (){
+       var {id} = this.state;
+       console.log("cap nhât",this.state)
     return (
         <div className="panel panel-warning">
                 <div className="panel-heading">
-                    <div className="panel-title">Add todo</div>
+                    <div className="panel-title">
+                        { id !=='' ? 'cập nhật' : 'thêm công việc'}
+                    </div>
                     <a 
                     className="fa fa-times-circle text-right"
                     onClick = {this.onCloseForm}>
