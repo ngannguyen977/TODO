@@ -17,6 +17,9 @@ class TaskList extends Component {
         var name = target.name;
         var value = target.value;
         //chuyền ra ngoài cái value nếu name = "filterName"
+        console.log('name',name)
+        console.log('value',value)
+        console.log('this.state',this.state)
         this.props.onFilter(
             name ==='filterName' ? value : this.state.filterName,
             name ==='filterStatus' ? value : this.state.filterStatus
@@ -31,7 +34,6 @@ class TaskList extends Component {
    render (){
 
     var {filterName, filterStatus}  = this.state;
-    console.log("dsds",this.state)
     //trong Tasklist khia báo biết tasks 
     //để lấy props tên propsTask từ bên App
     var tasks = this.props.propsTask //~var {tasks} = this.props; 

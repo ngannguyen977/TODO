@@ -167,27 +167,37 @@ class App extends Component {
         // tiep tuc chuyền cái taskEditing này vào form để hiện thị gtri lên
     }
     //nhận 2 biến
-    onFilter = (filterName, filterStatus) =>{
+    onFilter = (filterName='', filterStatus) =>{
+        console.log("app", filterName, filterStatus)
         filterStatus = parseInt(filterStatus, 10)
         this.setState({
             filter :{
-                name: filterName.toLowerCase,
+                name: filterName.toLowerCase(),
                 status:filterStatus
             }
         })
+        console.log('app name',this.state)
         
     }
     render (){
         // tạo biến để lấy giá trị của state ở trên 
         // lấy biến task này truyền vào Takslist với tên props là propsTask ={tasks}
         var { tasks, isDisplayForm, taskEditing, filter } = this.state
-        console.log(filter)
         if(filter){
             if(filter.name){
                 tasks = tasks.filter((task)=>{
                     return task.name.toLowerCase().indexOf(filter.name) != -1;
                 })
             }
+            //filter theo status ko can ktra dieu kien vi luon luon ko rong
+            tasks = tasks.filter((task)=>{
+                // neu status = -1 lay ra het
+               if(filter.status === -1){
+                   return tasks;
+               }else{
+                   return task.status === (filter.status==1 ? true : false)
+               }
+            })    
         }
         //var tasks = this.state.tasks;   
 
