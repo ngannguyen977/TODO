@@ -3,6 +3,7 @@ import React, { Component } from "react";
 class TaskForm extends Component{
     constructor(props){
         super(props);
+        //tao state luu trữ gtri của ô input ,select
         this.state = {
             id: '',
             name: '',
@@ -11,7 +12,8 @@ class TaskForm extends Component{
 
     }
     componentWillMount(){
-        //
+        //khi taskform xuất hiện dữ liệu sẽ lặp tức đổ ra ngoài form
+        //nếu tồn tại
         if(this.props.task){
             this.setState({
                 //prop từ app truyền vào là task
@@ -19,10 +21,29 @@ class TaskForm extends Component{
                 name: this.props.task.name,
                 status: this.props.task.status
             });
-            console.log(this.state)
         }
     }
-
+    // do form mở lên rồi ko còn chạy vào componentWillMount nữa
+    // khi vừa click vào thêm vừa click vào sửa
+   //khắc phục tình trạng khi bấm thêm ko bấm sửa được
+    componentWillReceiveProps(nextProps){
+        if(nextProps && nextProps.task){
+            this.setState({
+                //prop từ app truyền vào là task
+                id: nextProps.task.id,
+                name: nextProps.task.name,
+                status: nextProps.task.status
+            });
+        }else if(nextProps && nextProps.task === null){
+            // trường hợp bấm sửa rồi bấm thêm ko dc
+            //nếu nextProps.task ko tồn tại thì set lại form thêm
+            this.setState({
+                id: '',
+                name: '',
+                status: false
+            })
+        }
+    }
     onCloseForm = () =>{
        // console.log('close form')
         // gọi thông qua props onCloseForm bên ngoài
@@ -33,9 +54,11 @@ class TaskForm extends Component{
         var target = event.target;
         var name = target.name;
         var value =target.value;
-
-        // ép kiểu
-        
+        //ép kiểu
+        if(name==='status'){
+            value = target.value === 'true'? true : false
+        }
+        // luu lại (updste lại state trong constructor)
         this.setState({
            [name] : value
         })
@@ -68,11 +91,11 @@ class TaskForm extends Component{
     }
    render (){
        var {id} = this.state;
-       console.log("cap nhât",this.state)
     return (
         <div className="panel panel-warning">
                 <div className="panel-heading">
                     <div className="panel-title">
+                        {/* sửa sẽ có id còn thêm ko có */}
                         { id !=='' ? 'cập nhật' : 'thêm công việc'}
                     </div>
                     <a 
@@ -103,7 +126,12 @@ class TaskForm extends Component{
                         <option value={false}>Ẩn</option>
                         </select>
                         <div className="text-center">
-                            <button type="submit" className="btn btn-warning">
+                            
+                            <button 
+                            type="submit" 
+                            className="btn btn-warning"
+                            // khi bâm lưu lại chuyền du lieu ra lai cho app, sau do cap nhat lai
+                            >
                                 <span className="fa fa-plus">Lưu lại</span>
                             </button>
                             <button 

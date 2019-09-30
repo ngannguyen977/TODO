@@ -2,9 +2,36 @@ import React, { Component } from "react";
 import TaskItem from "./TaskItem";
 
 class TaskList extends Component {
- 
+    constructor(props){
+        super(props);
+        // khi nhập gti phải luu gia tri vao state
+        // phải đặt trùng tên với name của input bên dưới
+        this.state = {
+            filterName : '',
+            filterStatus: -1 // all: -1, active: 1, an : 0
+          
+        }
+    }
+    onChange = (event) =>{
+        var target = event.target;
+        var name = target.name;
+        var value = target.value;
+        //chuyền ra ngoài cái value nếu name = "filterName"
+        this.props.onFilter(
+            name ==='filterName' ? value : this.state.filterName,
+            name ==='filterStatus' ? value : this.state.filterStatus
+        )
+        // lưu giá trị khi nguoi dung nhập input
+        this.setState({
+            [name] : value
+        });
+
+
+    }
    render (){
 
+    var {filterName, filterStatus}  = this.state;
+    console.log("dsds",this.state)
     //trong Tasklist khia báo biết tasks 
     //để lấy props tên propsTask từ bên App
     var tasks = this.props.propsTask //~var {tasks} = this.props; 
@@ -43,12 +70,17 @@ class TaskList extends Component {
                         type="text"
                         className="form-control"
                         name="filterName"
+                        // lưu vào value
+                        value={filterName}
+                        onChange = {this.onChange}
                         /> 
                     </td>
                     <td>
                         <select
                         className="form-control"
                         name="filterStatus"
+                        value={filterStatus}
+                        onChange = {this.onChange}
                         >
                             <option value={-1}>Tat cả</option>
                             <option value={0}>Ần</option>

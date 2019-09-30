@@ -12,7 +12,12 @@ class App extends Component {
            
             tasks: [],
             isDisplayForm: false,
-            taskEditing: ''
+            //khởi tạo task đang edit
+            taskEditing: null,
+            filter:{
+                name:"",
+                status:-1
+            }
         }
     }
     //làm sao cho sao khi f5 lại dữ liệu còn giữ nguyên
@@ -36,19 +41,48 @@ class App extends Component {
         return this.s4() + this.s4() + '-' + this.s4() + '-' +this.s4() + '-'
         +this.s4()+ this.s4();
     }
+    // tìm vị trí 
+    findIndex = (id) =>{
+        //lấy ds các task ra
+        var { tasks} = this.state;
+        var result = -1;
+        //moi lan duyệt qua nhận dc 1 task và biến index
+        tasks.forEach((task, index)=>{
+            //kiem tra task nào có id = id nhận được
+            if(task.id === id){
+                result = index;
+            }
 
+        });
+        // nguoc lai 
+        return result;
+
+    }
     //viet theo kieu arrow để ko cần bind
     onToggleForm = () => {
-        this.setState({
-            //khai bao  từ khóa và so sánh với this.state.isDispalyForm 
-            //đã khai báo ở trên
-            isDisplayForm : ! this.state.isDisplayForm
-        })
+        // đang sửa form đang mở mà bấm thêm
+        if(this.state.isDisplayForm && this.state.taskEditing !== null){
+            this.setState({
+                //khai bao từ khóa và so sánh với this.state.isDispalyForm 
+                //đã khai báo ở trên
+                isDisplayForm : true,
+                //xóa đi taskEditing
+                taskEditing: null
+            })
+        }else{
+            this.setState({
+                //khai bao từ khóa và so sánh với this.state.isDispalyForm 
+                //đã khai báo ở trên
+                isDisplayForm : !this.state.isDisplayForm,
+                taskEditing: null
+            })
+        }
     }
     onCloseForm = () =>{
         // kiem tra xem truyen du lieu tư taskform ra ngoài thành cong chua
         this.setState({
-            isDisplayForm : false
+            isDisplayForm : false,
+
         })
     }
     onShowForm = () =>{
@@ -60,11 +94,24 @@ class App extends Component {
     onSubmit=(data)=>{
         //data thực chất là this.state trong TaskForm truyền ra
         // bước tiếp chỉ việc lấy giá trị này push thêm vào mảng tasks
+        console.log({data})
        var {tasks} = this.state;
+       //phân biệt được thêm hay sửa
+       if(data.id ===''){
         data.id = this.generateID()
+        //lấy tasks và push thêm vào 1 data(task)
         tasks.push(data)
+       }else{
+           //sửa
+           var index = this.findIndex(data.id);
+           tasks[index] = data;
+       }
+        //sau đó setState lại tasks
         this.setState({
-            tasks:tasks
+            tasks:tasks,
+             //cap nhật xong để rỗng
+             taskEditing: null
+            
         })
         //sau khi set tieup tuc luu vao localStorage
         localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -84,28 +131,64 @@ class App extends Component {
             tasks: newTasks
         })
     }
-
+    // nhận lại từ trong taskList truyền ra bằng cái function
+    //tìm cái index và del khỏi danh sách, có 2 cách
     onDelete = (id) =>{
-        const {tasks} = this.state;
-        tasks.splice(id, 1)
-        this.setState({
-            tasks: tasks
-        })
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+        // const {tasks} = this.state;
+        // tasks.splice(id, 1)
+        // this.setState({
+        //     tasks: tasks
+        // })
+        var { tasks} = this.state;
+        var index = this.findIndex(id);
+        //!= -1 có nghĩa là tìm thấy
+        if(index !== -1){
+            // sl phan tử xóa là 1
+            tasks.splice(index, 1);
+            this.setState({
+                tasks : tasks
+            });
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+        this.onCloseForm();
     }
     onUpdate =(id) =>{
+        // tìm task theo id
+        // cập nhật lại state là taskEditting
         var {tasks} = this.state;
-        var taskEditing = tasks[id];
+        var index = this.findIndex(id)
+        var taskSelect = tasks[index]
         this.setState({
-            taskEditing: taskEditing
+            taskEditing : taskSelect,
+           
         })
         this.onShowForm();
-
+        
+        // tiep tuc chuyền cái taskEditing này vào form để hiện thị gtri lên
+    }
+    //nhận 2 biến
+    onFilter = (filterName, filterStatus) =>{
+        filterStatus = parseInt(filterStatus, 10)
+        this.setState({
+            filter :{
+                name: filterName.toLowerCase,
+                status:filterStatus
+            }
+        })
+        
     }
     render (){
         // tạo biến để lấy giá trị của state ở trên 
         // lấy biến task này truyền vào Takslist với tên props là propsTask ={tasks}
-        var { tasks, isDisplayForm, taskEditing } = this.state
+        var { tasks, isDisplayForm, taskEditing, filter } = this.state
+        console.log(filter)
+        if(filter){
+            if(filter.name){
+                tasks = tasks.filter((task)=>{
+                    return task.name.toLowerCase().indexOf(filter.name) != -1;
+                })
+            }
+        }
         //var tasks = this.state.tasks;   
 
         // kiem tra nếu true thì hiển thị <TaskForm> ngượ lại rỗng
@@ -115,8 +198,8 @@ class App extends Component {
         <TaskForm 
         onSubmit = {this.onSubmit}
         onCloseForm={this.onCloseForm}
-        //chuyền taskEditing vào taskForm, qua taskForm nhận lại
-        task={this.taskEditing}
+        //chuyền props là tasks vào taskForm, qua taskForm nhận lại
+        task={taskEditing}
         /> : '';
 
         return (
@@ -145,6 +228,10 @@ class App extends Component {
                     //nhận từ TaskList ra bằng 1 function
                     onDelete ={this.onDelete}
                     onUpdate ={this.onUpdate}
+                    //this.onFilter trong đó onFilter này là function trên App
+                    // để nhận lại giá trị trong con chuyền ra thông ra
+                    //onFilter trái là props chuyền vào con
+                    onFilter = {this.onFilter}
                     />
                     {/* //ta bat dau vào TaskItem lấy item ra */}
                 </div> 
