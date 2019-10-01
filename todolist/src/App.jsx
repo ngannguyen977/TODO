@@ -3,6 +3,7 @@ import TaskForm from './components/TaskForm';
 import Control from './components/control';
 import TaskList from './components/TaskList';
 import './App.css';
+import { async } from "q";
 
 class App extends Component {
     constructor(props){
@@ -17,6 +18,13 @@ class App extends Component {
             filter:{
                 name:"",
                 status:-1
+            },
+            //truyền keyword vào trong search
+            keyword: "",
+            //sort -> control -> app
+            sort:{
+                by:'name',
+                value: 1
             }
         }
     }
@@ -168,7 +176,6 @@ class App extends Component {
     }
     //nhận 2 biến
     onFilter = (filterName='', filterStatus) =>{
-        console.log("app", filterName, filterStatus)
         filterStatus = parseInt(filterStatus, 10)
         this.setState({
             filter :{
@@ -176,15 +183,46 @@ class App extends Component {
                 status:filterStatus
             }
         })
-        console.log('app name',this.state)
+      
         
+    }
+    onSearch = (keyword)=>{
+        //nhận keyword từ trong search ra rồi thì setstate lại
+        this.setState({
+            keyword: keyword
+        })
+        //khi co duoc keyword -> dưới hám render kiểm tra điều kiện 
+    }
+
+    onSort = async(sortBy, sortValue) =>{
+        //luu gia tri nhan duoc vào state đã khai báo dau vao trên constructor
+        
+        await this.setState({
+               sort:{
+                   by : sortBy,
+                   value : sortValue
+               }
+        })
+        console.log('sort ngoài app', this.state.sort)
     }
     render (){
         // tạo biến để lấy giá trị của state ở trên 
         // lấy biến task này truyền vào Takslist với tên props là propsTask ={tasks}
-        var { tasks, isDisplayForm, taskEditing, filter } = this.state
+        var { 
+            tasks, 
+            isDisplayForm, 
+            taskEditing, 
+            filter, 
+            keyword,
+            sort,
+            sortBy,
+            sortValue
+        } = this.state
+        
+        ///////////chức năng filter//////////
         if(filter){
             if(filter.name){
+                // lấy từng task và trả về task có name đó
                 tasks = tasks.filter((task)=>{
                     return task.name.toLowerCase().indexOf(filter.name) != -1;
                 })
@@ -195,10 +233,37 @@ class App extends Component {
                if(filter.status === -1){
                    return tasks;
                }else{
-                   return task.status === (filter.status==1 ? true : false)
+                   //task nào có status trùng khớp sẽ lấy task đó
+                   return task.status === (filter.status === 1 ? true : false)
                }
             })    
         }
+         /////////// ///////chức năng search///////////
+        if(keyword){
+            tasks = tasks.filter((task)=>{
+                //do chỉ có name chưa có thêm desc nên tạm thời chỉ search theo name
+                // lấy từng task và trả về task có name đó
+                // indexof !== -1 : xem có chứa keyword ko
+                return task.name.toLowerCase().indexOf(keyword) !== -1;
+            })
+        }
+        ////////////// chuc nang sort///////////////
+        if(sortBy === 'name'){
+        tasks.sort((a, b) =>{
+            /////name///
+            if(a.name > b.name) return sortValue;
+            else if(a.name < b.name) return -sortValue;
+            else return 0;
+        })
+       }else{
+           ////status////
+        tasks.sort((a, b) =>{
+            //sắp xếp theo tên tăng dần, giảm dần
+            if(a.status > b.status) return sortValue;
+            else if(a.status < b.status) return -sortValue;
+            else return 0;
+        })
+       }
         //var tasks = this.state.tasks;   
 
         // kiem tra nếu true thì hiển thị <TaskForm> ngượ lại rỗng
@@ -229,7 +294,11 @@ class App extends Component {
                         <span className="fa fa-plus">Thêm công việc</span>
                     </button>
                     
-                    <Control />
+                    <Control 
+                        onSearch = { this.onSearch }
+                        onSort = {this.onSort}
+                        
+                    />
                     {/* // từ đây ta thấy trong taskList đã có prop này onUpdateStatus*/}
                     {/* ta tiếp tuc chuyền props này vào taskItem nay trên tasklist */}
                     {/* vào taskItem xử lý button status */}

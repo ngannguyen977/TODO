@@ -32,3 +32,11 @@
 input {
     z-index: 1000;
 }
+
+.sort_selected:before {
+    content: "\f00c";
+    font-family: FontAwesome;
+    font-weight: normal;
+    margin: 0 0 0 10px;
+    display: inline-block;
+}
