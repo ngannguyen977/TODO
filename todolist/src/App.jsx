@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import TaskForm from './components/TaskForm';
 import Control from './components/control';
 import TaskList from './components/TaskList';
+import demo from './trainning/demo';
 import './App.css';
 import { async } from "q";
 
@@ -224,7 +225,7 @@ class App extends Component {
             if(filter.name){
                 // lấy từng task và trả về task có name đó
                 tasks = tasks.filter((task)=>{
-                    return task.name.toLowerCase().indexOf(filter.name) != -1;
+                    return task.name.toLowerCase().indexOf(filter.name) !== -1;
                 })
             }
             //filter theo status ko can ktra dieu kien vi luon luon ko rong
@@ -286,19 +287,23 @@ class App extends Component {
                 </div> 
 
                 <div className={isDisplayForm ? 'col-md-8 col-sx-6 mt-15' : 'col-md-12 col-sx-12 mt-15' }>
-                    <button 
-                    type="button" 
-                    className="btn btn-primary"
-                    onClick = {this.onToggleForm}
-                    >
-                        <span className="fa fa-plus">Thêm công việc</span>
-                    </button>
-                    
-                    <Control 
-                        onSearch = { this.onSearch }
-                        onSort = {this.onSort}
-                        
-                    />
+                   <div className="">
+                        <div className="btn-add-cv"> 
+                            <button 
+                                type="button" 
+                                className="btn btn-primary"
+                                onClick = {this.onToggleForm}
+                                >
+                                    <span className="fa fa-plus">Thêm công việc</span>
+                                </button>
+                        </div>
+                       <div className="flex-content"> 
+                            <Control 
+                                onSearch = { this.onSearch }
+                                onSort = {this.onSort}
+                            />
+                       </div>
+                   </div>
                     {/* // từ đây ta thấy trong taskList đã có prop này onUpdateStatus*/}
                     {/* ta tiếp tuc chuyền props này vào taskItem nay trên tasklist */}
                     {/* vào taskItem xử lý button status */}

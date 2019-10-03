@@ -17,6 +17,11 @@
     color: white;
 }
 
+.btn-add-cv {
+    float: left;
+    clear: both;
+}
+
 .App-link {
     color: #09d3ac;
 }

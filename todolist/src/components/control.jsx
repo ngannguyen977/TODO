@@ -6,7 +6,7 @@ class Control extends Component {
    render (){
       
     return (
-       <div className="row">
+       <div className="">
           {/* // onSearch sẽ là props truyền vào serach */}
            <Search onSearch = {this.props.onSearch} />
            <Sort 
