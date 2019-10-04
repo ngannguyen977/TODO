@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import TaskItem from "./TaskItem";
+import { connect } from 'react-redux';
 
 class TaskList extends Component {
     constructor(props){
@@ -17,9 +18,7 @@ class TaskList extends Component {
         var name = target.name;
         var value = target.value;
         //chuyền ra ngoài cái value nếu name = "filterName"
-        console.log('name',name)
-        console.log('value',value)
-        console.log('this.state',this.state)
+       
         this.props.onFilter(
             name ==='filterName' ? value : this.state.filterName,
             name ==='filterStatus' ? value : this.state.filterStatus
@@ -32,11 +31,12 @@ class TaskList extends Component {
 
     }
    render (){
-
+    // todos sẽ lên store lấy initialState thông qua reducer
+    console.log('lây duoc props chua',this.props.tasks)
+    var {tasks} = this.props;
     var {filterName, filterStatus}  = this.state;
     //trong Tasklist khia báo biết tasks 
     //để lấy props tên propsTask từ bên App
-    var tasks = this.props.propsTask //~var {tasks} = this.props; 
     //hàm map sẽ copy từng phần tử và index của item
     //sau đó chỉ việc render ra TaskItem đã trả về chỗ return của taskList component
     var itemTask = tasks.map((task, index)=>{
@@ -97,4 +97,14 @@ class TaskList extends Component {
     );
    }
 }
-export default TaskList;
+// lấy các state của store chuyền thành các props của component này
+//state này chính là state trên store trong taskReducer
+const mapStateToProps = (state) =>{
+    return {
+        //có props là todos bên trái
+        // tasks bên phải là key trong reducer/index
+        tasks: state.tasks
+    }
+}
+
+export default connect(mapStateToProps, null)(TaskList) ;

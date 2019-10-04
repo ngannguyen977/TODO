@@ -307,7 +307,7 @@ class App extends Component {
                     {/* // từ đây ta thấy trong taskList đã có prop này onUpdateStatus*/}
                     {/* ta tiếp tuc chuyền props này vào taskItem nay trên tasklist */}
                     {/* vào taskItem xử lý button status */}
-                    <TaskList propsTask = {tasks}
+                    <TaskList 
                     onUpdateStatus = {this.onUpdateStatus}
                     //nhận từ TaskList ra bằng 1 function
                     onDelete ={this.onDelete}
