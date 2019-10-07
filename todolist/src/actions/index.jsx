@@ -7,4 +7,11 @@ export const listAll= () => {
     return {
         type: types.LIST_ALL
     }
+};
+export  const addTask =(task) =>{
+    return {
+        type:types.ADD_TASK,
+        // key là task và tham số là task
+        task // ~ task: task
+    }
 }

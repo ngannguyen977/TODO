@@ -1,14 +1,12 @@
 import React, { Component } from "react";
+import { connect}  from 'react-redux';
+import * as actions from './../actions/index'
 
 class TaskForm extends Component{
     constructor(props){
         super(props);
         //tao state luu trữ gtri của ô input ,select
-        this.state = {
-            id: '',
-            name: '',
-            status: false
-        }
+        this.state = {}
 
     }
     componentWillMount(){
@@ -73,10 +71,8 @@ class TaskForm extends Component{
     onSubmit = (event) =>{
         //ngăn tình trạng load lại page
         event.preventDefault();
-        //onSubmit dưới này là props của cha (app) truyền vào
-        //ta gán this.state để chuyền ra ngoài cha
-       this.props.onSubmit(this.state)
-       // sau khi đã thêm rồi
+        // lúc này đã có props onAddTask ta chỉ việc sử dụng
+        this.props.onAddTask(this.state);
        this.onClear();
        this.onCloseForm();
 
@@ -150,4 +146,23 @@ class TaskForm extends Component{
     );
    }
 }
-export default TaskForm;
+const mapStateToProps = state =>{
+    return {
+
+    }
+}
+
+//gọi 1 action chuyển lên store đề reducer phân tích
+const mapDispatchToProps = (dispatch, props) =>{
+    return {
+       onAddTask : (task) =>{
+           // gọi actions addTask 
+           //có type là  ADD_TASK 
+           // có tham số là task
+           //lên reducer để thực thi
+           //và ta nhận được props là onAddTask
+           dispatch(actions.addTask(task))
+       }
+    }
+}
+export default connect (mapStateToProps, mapDispatchToProps)(TaskForm);

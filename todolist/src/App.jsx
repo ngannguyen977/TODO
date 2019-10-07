@@ -12,7 +12,7 @@ class App extends Component {
         this.state = {
             //khởi tạo tasks 
            
-            tasks: [],
+            // tasks: [],
             isDisplayForm: false,
             //khởi tạo task đang edit
             taskEditing: null,
@@ -31,29 +31,12 @@ class App extends Component {
     }
     //làm sao cho sao khi f5 lại dữ liệu còn giữ nguyên
     //nghĩa là(gán ngược trở lại this.state.tasks)
-    //nen ta su dung lifecycle componentwillmount
-    componentWillMount(){
-        if(localStorage && localStorage.getItem('tasks')){
-            //parse lai chuỗi luu tren localstore thành JSON
-            var tasks =JSON.parse(localStorage.getItem('tasks'));
-            this.setState({
-                tasks: tasks
-            })
-        }
-    }
+    // //nen ta su dung lifecycle componentwillmount
    
-    s4(){
-        return Math.floor((1+Math.random())* 0x10000).toString(16).substring(1)
-    }
-
-    generateID(){
-        return this.s4() + this.s4() + '-' + this.s4() + '-' +this.s4() + '-'
-        +this.s4()+ this.s4();
-    }
     // tìm vị trí 
     findIndex = (id) =>{
         //lấy ds các task ra
-        var { tasks} = this.state;
+        var { tasks } = this.state;
         var result = -1;
         //moi lan duyệt qua nhận dc 1 task và biến index
         tasks.forEach((task, index)=>{
@@ -100,31 +83,7 @@ class App extends Component {
             isDisplayForm : true
         })
     }
-    onSubmit=(data)=>{
-        //data thực chất là this.state trong TaskForm truyền ra
-        // bước tiếp chỉ việc lấy giá trị này push thêm vào mảng tasks
-        console.log({data})
-       var {tasks} = this.state;
-       //phân biệt được thêm hay sửa
-       if(data.id ===''){
-        data.id = this.generateID()
-        //lấy tasks và push thêm vào 1 data(task)
-        tasks.push(data)
-       }else{
-           //sửa
-           var index = this.findIndex(data.id);
-           tasks[index] = data;
-       }
-        //sau đó setState lại tasks
-        this.setState({
-            tasks:tasks,
-             //cap nhật xong để rỗng
-             taskEditing: null
-            
-        })
-        //sau khi set tieup tuc luu vao localStorage
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
+    
 
     onUpdateStatus = (id) => {
         //nhan lai id trong taskItem
@@ -204,67 +163,65 @@ class App extends Component {
                    value : sortValue
                }
         })
-        console.log('sort ngoài app', this.state.sort)
     }
     render (){
         // tạo biến để lấy giá trị của state ở trên 
         // lấy biến task này truyền vào Takslist với tên props là propsTask ={tasks}
         var { 
-            tasks, 
             isDisplayForm, 
             taskEditing, 
-            filter, 
-            keyword,
-            sort,
-            sortBy,
-            sortValue
+            // filter, 
+            // keyword,
+            // sort,
+            // sortBy,
+            // sortValue
         } = this.state
         
         ///////////chức năng filter//////////
-        if(filter){
-            if(filter.name){
-                // lấy từng task và trả về task có name đó
-                tasks = tasks.filter((task)=>{
-                    return task.name.toLowerCase().indexOf(filter.name) !== -1;
-                })
-            }
-            //filter theo status ko can ktra dieu kien vi luon luon ko rong
-            tasks = tasks.filter((task)=>{
-                // neu status = -1 lay ra het
-               if(filter.status === -1){
-                   return tasks;
-               }else{
-                   //task nào có status trùng khớp sẽ lấy task đó
-                   return task.status === (filter.status === 1 ? true : false)
-               }
-            })    
-        }
-         /////////// ///////chức năng search///////////
-        if(keyword){
-            tasks = tasks.filter((task)=>{
-                //do chỉ có name chưa có thêm desc nên tạm thời chỉ search theo name
-                // lấy từng task và trả về task có name đó
-                // indexof !== -1 : xem có chứa keyword ko
-                return task.name.toLowerCase().indexOf(keyword) !== -1;
-            })
-        }
-        ////////////// chuc nang sort///////////////
-        if(sortBy === 'name'){
-        tasks.sort((a, b) =>{
-            /////name///
-            if(a.name > b.name) return sortValue;
-            else if(a.name < b.name) return -sortValue;
-            else return 0;
-        })
-       }else{
-           ////status////
-        tasks.sort((a, b) =>{
-            //sắp xếp theo tên tăng dần, giảm dần
-            if(a.status > b.status) return sortValue;
-            else if(a.status < b.status) return -sortValue;
-            else return 0;
-        })
-       }
+    //     if(filter){
+    //         if(filter.name){
+    //             // lấy từng task và trả về task có name đó
+    //             tasks = tasks.filter((task)=>{
+    //                 return task.name.toLowerCase().indexOf(filter.name) !== -1;
+    //             })
+    //         }
+    //         //filter theo status ko can ktra dieu kien vi luon luon ko rong
+    //         tasks = tasks.filter((task)=>{
+    //             // neu status = -1 lay ra het
+    //            if(filter.status === -1){
+    //                return tasks;
+    //            }else{
+    //                //task nào có status trùng khớp sẽ lấy task đó
+    //                return task.status === (filter.status === 1 ? true : false)
+    //            }
+    //         })    
+    //     }
+    //      /////////// ///////chức năng search///////////
+    //     if(keyword){
+    //         tasks = tasks.filter((task)=>{
+    //             //do chỉ có name chưa có thêm desc nên tạm thời chỉ search theo name
+    //             // lấy từng task và trả về task có name đó
+    //             // indexof !== -1 : xem có chứa keyword ko
+    //             return task.name.toLowerCase().indexOf(keyword) !== -1;
+    //         })
+    //     }
+    //     ////////////// chuc nang sort///////////////
+    //     if(sortBy === 'name'){
+    //     tasks.sort((a, b) =>{
+    //         /////name///
+    //         if(a.name > b.name) return sortValue;
+    //         else if(a.name < b.name) return -sortValue;
+    //         else return 0;
+    //     })
+    //    }else{
+    //        ////status////
+    //     tasks.sort((a, b) =>{
+    //         //sắp xếp theo tên tăng dần, giảm dần
+    //         if(a.status > b.status) return sortValue;
+    //         else if(a.status < b.status) return -sortValue;
+    //         else return 0;
+    //     })
+    //    }
         //var tasks = this.state.tasks;   
 
         // kiem tra nếu true thì hiển thị <TaskForm> ngượ lại rỗng
@@ -272,7 +229,6 @@ class App extends Component {
        //duoi đây là 2 propr tên: onSubmit và onCloseForm
         var elmTaskForm = isDisplayForm ? 
         <TaskForm 
-        onSubmit = {this.onSubmit}
         onCloseForm={this.onCloseForm}
         //chuyền props là tasks vào taskForm, qua taskForm nhận lại
         task={taskEditing}
