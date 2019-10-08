@@ -1,12 +1,16 @@
+
+// tại taskItem connect đến store và dispatch 1 action
 import React, { Component } from "react";
 import TaskList from "./TaskList";
+import {connect} from 'react-redux';
+import * as actions from './../actions/index';
 
 class TaskItem extends Component {
 
     onUpdateStatus = () => {
-        //truyền vào tham số this.props.task.id cho onUpdateStatus 
-        //mà TaskList truyền vào
+        //xác định id để thực hiện update
         this.props.onUpdateStatus(this.props.task.id);
+        console.log("lấy id", this.props.task.id)
     }
     onDelete = () =>{
          //chuyền ra cho TaskList 1 id
@@ -58,4 +62,17 @@ class TaskItem extends Component {
     );
    }
 }
-export default TaskItem;
+const mapStateToProps = state =>{
+    return{
+
+    }
+};
+const mapDispatchToProps =(dispatch, props)=>{
+    return{
+        onUpdateStatus :(id)=>{
+            //dispatch action updateStatus
+            dispatch(actions.updateStatus(id))
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TaskItem);

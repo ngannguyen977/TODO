@@ -32,7 +32,6 @@ class TaskList extends Component {
     }
    render (){
     // todos sẽ lên store lấy initialState thông qua reducer
-    console.log('lây duoc props chua',this.props.tasks)
     var {tasks} = this.props;
     var {filterName, filterStatus}  = this.state;
     //trong Tasklist khia báo biết tasks 
@@ -47,7 +46,6 @@ class TaskList extends Component {
             index={index} // index = {task.index}
             task={task}
             //tiep tuc truyen vao cho taskItem
-            onUpdateStatus = { this.props.onUpdateStatus}
             onDelete = {this.props.onDelete}
             onUpdate = {this.props.onUpdate}
             />
@@ -101,7 +99,7 @@ class TaskList extends Component {
 //state này chính là state trên store trong taskReducer
 const mapStateToProps = (state) =>{
     return {
-        //có props là todos bên trái
+        //có props là tasks bên trái
         // tasks bên phải là key trong reducer/index
         tasks: state.tasks
     }

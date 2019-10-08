@@ -17,7 +17,7 @@ export  const addTask =(task) =>{
 };
 export const toggleForm = () =>{
     return {
-        type : types.TOGGLE_FROM
+        type : types.TOGGLE_FORM
     }
 }
 export const openForm = () =>{
@@ -28,5 +28,12 @@ export const openForm = () =>{
 export const closeForm = () =>{
     return {
         type:types.CLOSE_FORM
+    }
+}
+export const updateStatus = (id) =>{
+    return {
+        type:types.UPDATE_STATUS,
+        //tham so
+        id // id: id
     }
 }

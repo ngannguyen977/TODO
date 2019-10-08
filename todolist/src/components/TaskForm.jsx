@@ -42,9 +42,9 @@ class TaskForm extends Component{
             })
         }
     }
-    onCloseForm = () =>{
-       // console.log('close form')
-        // gọi thông qua props onCloseForm bên ngoài
+    onExitForm = () =>{
+        //gọi đến props đã được cung cấp khi map
+        // lúc này trên store sẽ cập nhật lại state và trả lại
         this.props.onCloseForm();
     }
 
@@ -74,7 +74,7 @@ class TaskForm extends Component{
         // lúc này đã có props onAddTask ta chỉ việc sử dụng
         this.props.onAddTask(this.state);
        this.onClear();
-       this.onCloseForm();
+       this.onExitForm();
 
     }
 
@@ -96,7 +96,7 @@ class TaskForm extends Component{
                     </div>
                     <a 
                     className="fa fa-times-circle text-right"
-                    onClick = {this.onCloseForm}>
+                    onClick = {this.onExitForm}>
                     </a>
                 </div>
                 <div className="panel-body">
@@ -162,7 +162,15 @@ const mapDispatchToProps = (dispatch, props) =>{
            //lên reducer để thực thi
            //và ta nhận được props là onAddTask
            dispatch(actions.addTask(task))
-       }
+       },
+        onCloseForm : () =>{
+            // gọi actions closeForm 
+           //có type là CLOSE_FORM  
+           //lên reducer để thực thi
+           //và ta nhận được props là onCloseForm 
+           // props này sẽ đực sử dụng phia trên 
+            dispatch(actions.closeForm())
+        }
     }
 }
 export default connect (mapStateToProps, mapDispatchToProps)(TaskForm);

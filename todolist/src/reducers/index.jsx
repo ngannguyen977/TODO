@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
 import tasksReducer from './tasksReducer';
-import isDisplayForm from './isDisplayForm';
+import displayReducer from './isDisplayForm';
 
 const myReducer = combineReducers ({
-    tasks: tasksReducer // ~ tasks : tasks
+    tasks: tasksReducer, // ~ tasks : tasks
+    displayReducer//displayReducer:displayReducer
 })
 export default myReducer;
