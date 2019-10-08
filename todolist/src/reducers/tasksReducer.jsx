@@ -18,8 +18,7 @@ var randomID = () =>{
 
 // là array hay object là dựa vào data
 var data = JSON.parse(localStorage.getItem('tasks'));
-console.log("data", localStorage)
-
+console.log("data trước thêm", data)
 var initialState = data ? data : [];
 var tasksReducer = (state = initialState, action) =>{
     switch(action.type){
@@ -33,12 +32,12 @@ var tasksReducer = (state = initialState, action) =>{
                 status: action.task.status
             }
             state.push(newTask);
-            console.log("state", newTask)
             // //set item tasks và value là state
             // //luu vao localStore dạng string
             localStorage.setItem('tasks',JSON.stringify(state))
+            console.log("data sau thêm", data)
             return [...state];
-           
+         
         default: return state
     }
 }
