@@ -14,4 +14,19 @@ export  const addTask =(task) =>{
         // key là task và tham số là task
         task // ~ task: task
     }
+};
+export const toggleForm = () =>{
+    return {
+        type : types.TOGGLE_FROM
+    }
+}
+export const openForm = () =>{
+    return{
+        type: types.OPEN_FORM
+    }
+}
+export const closeForm = () =>{
+    return {
+        type:types.CLOSE_FORM
+    }
 }
