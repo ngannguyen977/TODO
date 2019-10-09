@@ -6,20 +6,31 @@ import {connect} from 'react-redux';
 import * as actions from './../actions/index';
 
 class TaskItem extends Component {
-
+    showStatusElement(){
+        return (
+            <span className ={this.props.task.status ? 'label label-danger' : 
+            'label label-info' }
+            onClick ={this.onUpdateStatus}
+            >
+            {this.props.task.status === true ? 'kich hoạt': 'ẩn'}
+            </span>
+        )
+    }
     onUpdateStatus = () => {
         //xác định id để thực hiện update
         this.props.onUpdateStatus(this.props.task.id);
-        console.log("lấy id", this.props.task.id)
     }
-    onDelete = () =>{
-         //chuyền ra cho TaskList 1 id
-        this.props.onDelete(this.props.task.id)
-        console.log("event",this.props.task.id)
+    onDeleteItem = () =>{
+        this.props.onDeleteTask(this.props.task.id);
+        this.props.onCloseForm();
+
     }
-    onUpdate = () =>{
-        this.props.onUpdate(this.props.task.id);
-        console.log("this id", this.props.task.id)
+    onSelectedItem = () =>{
+        //onOpenForm đã được map dưới kia
+        console.log("edit item",this.props.task )
+       this.props.onOpenForm();
+       //có tham số là cái task
+       this.props.onEditTask(this.props.task);
     }
 
    render (){
@@ -47,14 +58,14 @@ class TaskItem extends Component {
                 //sau đó vào onUpdate của app và cập nhật lại taskEditing
                 //tasEditing tiêp tục truyền vào TaskForm
                 //lúc nya2 sẽ cập nhật lại state là setState
-                onClick = {this.onUpdate}>
+                onClick = {this.onSelectedItem}>
                     <span className="fa fa-pencil"></span>Sửa
                 </button>
                 <button type="button" className="btn btn-danger"
                 // khi click delete
                 // truyền ra ngoài app và sẽ xóa phần tử trong ds tasks
                 // cập nhật lại localStore
-                onClick = {this.onDelete}>
+                onClick = {this.onDeleteItem}>
                     <span className="fa fa-trash"></span>Xóa
                 </button>
             </td>
@@ -72,6 +83,25 @@ const mapDispatchToProps =(dispatch, props)=>{
         onUpdateStatus :(id)=>{
             //dispatch action updateStatus
             dispatch(actions.updateStatus(id))
+        },
+        //sử dụng props này trên button xóa
+        onDeleteTask: (id) =>{
+            dispatch(actions.deleteTask(id))
+        },
+        onCloseForm : () =>{
+            // gọi actions closeForm 
+           //có type là CLOSE_FORM  
+           //lên reducer để thực thi
+           //và ta nhận được props là onCloseForm 
+           // props này sẽ đực sử dụng phia trên 
+            dispatch(actions.closeForm())
+        },
+        onOpenForm : () =>{
+            dispatch(actions.openForm())
+        },
+        //gọi onEditTask và truyền tham số là 1 cái task
+        onEditTask : (task) =>{
+            dispatch(actions.editTask(task))
         }
     }
 }

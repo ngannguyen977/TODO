@@ -43,11 +43,9 @@ class TaskList extends Component {
             //bắt đầu truyền vào cho taskItem
             return <TaskItem 
             key={task.id} 
-            index={index} // index = {task.index}
+            index={index + 1} // index = {task.index}
             task={task}
             //tiep tuc truyen vao cho taskItem
-            onDelete = {this.props.onDelete}
-            onUpdate = {this.props.onUpdate}
             />
        }
     })

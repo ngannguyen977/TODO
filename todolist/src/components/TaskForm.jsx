@@ -6,40 +6,41 @@ class TaskForm extends Component{
     constructor(props){
         super(props);
         //tao state luu trữ gtri của ô input ,select
-        this.state = {}
+        this.state = {
+            id: '',
+            name:'',
+            status: false
+        }
 
     }
     componentWillMount(){
         //khi taskform xuất hiện dữ liệu sẽ lặp tức đổ ra ngoài form
-        //nếu tồn tại
-        if(this.props.task){
+        //nếu tồn tại và có id 
+        //lấy props itemEditing bên dưới 
+        // cập nhật state lên form
+        if(this.props.itemEditing && this.props.itemEditing.id !==null){
             this.setState({
-                //prop từ app truyền vào là task
-                id: this.props.task.id,
-                name: this.props.task.name,
-                status: this.props.task.status
+                id: this.props.itemEditing.id,
+                name: this.props.itemEditing.name,
+                status: this.props.itemEditing.status
             });
+        }else{
+            this.onClear()
         }
     }
     // do form mở lên rồi ko còn chạy vào componentWillMount nữa
     // khi vừa click vào thêm vừa click vào sửa
    //khắc phục tình trạng khi bấm thêm ko bấm sửa được
     componentWillReceiveProps(nextProps){
-        if(nextProps && nextProps.task){
+        if(nextProps && nextProps.itemEditing){
             this.setState({
-                //prop từ app truyền vào là task
-                id: nextProps.task.id,
-                name: nextProps.task.name,
-                status: nextProps.task.status
+                //nhân duoc cai prop là itemEditing và set vào state
+                id: nextProps.itemEditing.id,
+                name: nextProps.itemEditing.name,
+                status: nextProps.itemEditing.status
             });
-        }else if(nextProps && nextProps.task === null){
-            // trường hợp bấm sửa rồi bấm thêm ko dc
-            //nếu nextProps.task ko tồn tại thì set lại form thêm
-            this.setState({
-                id: '',
-                name: '',
-                status: false
-            })
+        }else {
+            this.onClear();
         }
     }
     onExitForm = () =>{
@@ -61,38 +62,32 @@ class TaskForm extends Component{
            [name] : value
         })
     }
-    // onChange = (event) =>{
-
-    //     var target = event.target
-    //     this.setState({
-    //        name : target.value
-    //     })
-    // }
-    onSubmit = (event) =>{
+    
+    onSave = (event) =>{
         //ngăn tình trạng load lại page
         event.preventDefault();
         // lúc này đã có props onAddTask ta chỉ việc sử dụng
-        this.props.onAddTask(this.state);
-       this.onClear();
-       this.onExitForm();
+        this.props.onSaveTask(this.state);
+        this.onClear();
+        this.onExitForm();
 
     }
 
     onClear = () =>{
       // chỉ việc xóa hết các state 
       this.setState({
-          name: '',
+          name:'',
           status: false
       })
     }
    render (){
-       var {id} = this.state;
+       if( !this.props.isDisplayForm) return null;
     return (
         <div className="panel panel-warning">
                 <div className="panel-heading">
                     <div className="panel-title">
                         {/* sửa sẽ có id còn thêm ko có */}
-                        { id !=='' ? 'cập nhật' : 'thêm công việc'}
+                        { !this.state.id ? 'thêm công việc' : 'cập nhật'}
                     </div>
                     <a 
                     className="fa fa-times-circle text-right"
@@ -100,7 +95,7 @@ class TaskForm extends Component{
                     </a>
                 </div>
                 <div className="panel-body">
-                    <form onSubmit ={this.onSubmit}>
+                    <form onSubmit ={this.onSave}>
                         <div className="form-group">
                             <label>Name:</label>
                             <input
@@ -148,20 +143,24 @@ class TaskForm extends Component{
 }
 const mapStateToProps = state =>{
     return {
-
+       isDisplayForm: state.displayReducer,
+       //muốn lấy được itemEditing cần phải tạo 1 cái props
+        // được map từ state trên store(store là reducer)
+        // editReducer được lấy từ reducers/index
+        itemEditing : state.editReducer
     }
 }
 
 //gọi 1 action chuyển lên store đề reducer phân tích
 const mapDispatchToProps = (dispatch, props) =>{
     return {
-       onAddTask : (task) =>{
+       onSaveTask : (task) =>{
            // gọi actions addTask 
            //có type là  ADD_TASK 
            // có tham số là task
            //lên reducer để thực thi
            //và ta nhận được props là onAddTask
-           dispatch(actions.addTask(task))
+           dispatch(actions.saveTask(task))
        },
         onCloseForm : () =>{
             // gọi actions closeForm 
